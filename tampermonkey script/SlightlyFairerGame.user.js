@@ -1,16 +1,31 @@
 // ==UserScript==
 // @name         Slightly fairer game.
-// @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  Some useful functions for less fair game! Feature 1. Push enter to send message. 2. ColorShifting body. 3. Smoothed Layout.
+// @namespace    http://bart.vanhauwaert.org/less/
+// @version      0.2.6.6
+// @description  Some useful functions for less fair game! Feature 1. Push enter to send message. 2. ColorShifting body. 3. Smoothed/rounded Layout. 4. Name preview
 // @author       Krelsis
-// @match        http://bart.vanhauwaert.org/less/?wtd=74CHRBZqFUiQ4Pe1
-// @grant        none
+// @match        http://bart.vanhauwaert.org/less/
+// @updateURL    http://krelsis.net/SlightlyFairerGame.user.js
+// @grant        GM_addStyle
+// @grant        GM_getResourceText
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js
+// @require      https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/4.4.0/bootbox.min.js
+// @require      https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js
 // ==/UserScript==
 
 (function(w) {
 
+    var bstrap = GM_getResourceText("https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css");
+
+    GM_addStyle(bstrap);
+	
+	var mVersion = "0.2.6.6";
+	var hName = true;
+	var clrs = true;
+	var btnGap = true;
+	var btnRound = true;
+    var strBackup = "null";
+    
     $(document).ready(function()
 	{
 		
@@ -32,7 +47,7 @@
 		
 		setInterval(function incRed()
 		{
-			if(rToggle == false)
+			if(rToggle === false)
 			{
 				if (r >= 254)
 				{
@@ -64,7 +79,7 @@
 		
 		setInterval(function incGreen()
 		{
-			if(gToggle == false)
+			if(gToggle === false)
 			{
 				if (g >= 254)
 				{
@@ -96,7 +111,7 @@
 		
 		setInterval(function incBlue()
 		{
-			if(bToggle == false)
+			if(bToggle === false)
 			{
 				if (b >= 254)
 				{
@@ -150,32 +165,122 @@
 		
 		function updateColors()
 		{
+			
+			if(clrs===true)
+			{
 			var rgblol = document.getElementById("fairerGame");
-            if(typeof(rgblol) != 'undefined') 
+            if(typeof(rgblol) !== 'undefined') 
 			{
 				changeBackgroundColor(rgblol);
 			    changeBorderColor(rgblol);
 			}
 			changeBackgroundColor(rgblol2);
 			changeBorderColor(rgblol2);
-			/*
-			changeBorderColor(rgblol2);
-			changeBorderColor(rgblol3);
-			elements.map(function(el)
+			}
+			
+            var g = document.getElementsByClassName("playarea")[0];
+            var b = document.getElementsByClassName("leftactionbutton")[0];
+            var bb = document.getElementsByClassName("actionbutton");
+            
+			if (btnRound===true)
 			{
-				if(typeof(el) !== 'undefined') 
-					{
-						changeBackgroundColor(el);
-					}
-			});
-			*/
-		
-			//console.log ("lol i has try rgb("+r+","+g+","+b+")");
+
+				g.style="border-radius:40px;";
+				b.style="border-radius:40px;";
+				for(var i = 0; i < bb.length; i++)
+				{
+					bb[i].style="border-radius:40px;";
+				}
+			}
+			else
+			{
+				
+				g.style.borderRadius="0px";
+				b.style.borderRadius="0px";
+				for(var m = 0; m < bb.length; m++)
+				{
+					bb[m].style.borderRadius="0px";
+				}
+			}
+			
+			if(btnGap===true)
+			{
+				for(var x = 0; x < bb.length; x++)
+				{
+					bb[x].style.marginLeft="0.5%";
+				}
+			}
+			else
+			{
+				for(var z = 0; z < bb.length; z++)
+				{
+					bb[z].style.marginLeft="0px";
+				}
+			}
+			
+			
+			if (hName===true)
+			{
+				if(strBackup=="null")
+				{
+					$('.rightalign').each(function(index,el){
+						var selectedEl = $(el).find('span');
+						var selectedEl2 =  selectedEl.slice(0,1);;
+						var txt = selectedEl2.text();
+                        strBackup = "<span>" + selectedEl2.html() + "</span>";
+						txt = txt.replace("&lt;","<");
+						txt = txt.replace("&gt;",">");
+                        txt = "<span>" + txt + "</span>";
+						selectedEl.replaceWith(function() {return txt;});
+						
+					});
+				}
+			}
+			else
+			{
+				if(strBackup!=="null")
+				{
+					$('.rightalign').each(function(index,el){
+							var selectedEl = $(el).find('span');
+							var selectedEl2 =  selectedEl.slice(0,1);
+							var txt = "";
+							txt = strBackup;
+							strBackup = "null";
+							selectedEl.replaceWith(function() {return txt;});
+						});
+				}
+				
+			}
+			
+            
+           
+            
 		
 		}
 	
 	});
 
+	
+	function toggleClrShift() 
+	{
+		clrs = !clrs;
+	}
+	
+	function toggleBtnRnd() 
+	{
+		btnRound = !btnRound;
+	}
+	
+	function toggleBtnGap() 
+	{
+		btnGap = !btnGap;
+	}
+	
+	function toggleNamePrv() 
+	{
+		hName = !hName;
+	}
+	
     function init()
     {
         
@@ -186,19 +291,24 @@
             return;
         }
         var g = document.getElementsByClassName("playarea")[0];
-        g.innerHTML = '<div id="fairerGame" style="margin: 2% auto; padding: 1%; border-radius: 40px;border-style: solid;border-width: 2px;border-color: rgba(60, 120, 255, 0.8); background-color: rgba(30, 80, 255, 0.5);	text-align: center;">Slightly fairer mod activated.</div>' + g.innerHTML;
-        console.log("Hello, Slightly fairer game loaded.");
+        g.innerHTML = '<div id="fairerGame" style="margin: 2% auto; padding: 1%; border-radius: 40px;border-style: solid;border-width: 2px;border-color: rgba(60, 120, 255, 0.8); background-color: rgba(30, 80, 255, 0.5);	text-align: center;">Slightly fairer mod V' + mVersion + ' activated. </div> <div id="fairerGameControls" style="text-align:center;"><button id="tglClrs" type="button" class="actionbutton Wt-btn with-label" >Toggle color Shift(Stop on current color).</button><button id="tglBRnd" type="button" class="actionbutton Wt-btn with-label" >Toggle rounded Buttons.</button><button id="tglBGap" type="button" class="actionbutton Wt-btn with-label" >Toggle Button Gap.</button><button id="tglHName" type="button" class="actionbutton Wt-btn with-label" >Toggle html name preview.</button></div>' + g.innerHTML;
+        console.log("Hello, Slightly fairer game V" + mVersion + " loaded.");
         var t = $(".chatline");
-        var b = $(".leftactionbutton");
-        var bb = document.getElementsByClassName("actionbutton");
-        console.log(t);
-        console.log(b);
+        
         $(".chatlinespan input.chatline").on("keypress", function(e) { if(e.which===13) { $(".chatlinespan").prev()[0].click(); }});
-        g.style="border-radius:40px;";
-        for(var i = 0; i < bb.length; i++)
-        {
-            bb[i].style="border-radius:40px;margin-left:0.5%;";
-        }
+		
+		document.getElementById ("tglClrs").addEventListener (
+			"click", toggleClrShift, false
+		);
+		document.getElementById ("tglHName").addEventListener (
+			"click", toggleNamePrv, false
+		);
+		document.getElementById ("tglBGap").addEventListener (
+			"click", toggleBtnGap, false
+		);
+		document.getElementById ("tglBRnd").addEventListener (
+			"click", toggleBtnRnd, false
+		);
         
     }
     
