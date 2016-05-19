@@ -8,7 +8,8 @@ at the moment the only supported method of use/applying this modification is thr
 
 ## Tampermonkey
 If you'd like to apply this mod, you would first need to acquire tampermonkey.
-get [#tampermonkey](https://tampermonkey.net/) for free from their official site.
+
+Get [#tampermonkey](https://tampermonkey.net/) for free from their official site.
 
 Next you can either install the mod by clicking here : [#SlightlyFairerGame](http://krelsis.net/SlightlyFairerGame.user.js) 
 followed by clicking install, additionally you can use the source file and
