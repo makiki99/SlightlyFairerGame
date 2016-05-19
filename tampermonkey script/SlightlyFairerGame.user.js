@@ -181,6 +181,7 @@
             var g = document.getElementsByClassName("playarea")[0];
             var b = document.getElementsByClassName("leftactionbutton")[0];
             var bb = document.getElementsByClassName("actionbutton");
+            var bc = document.getElementsByClassName("inactionbutton");
 
 			if (btnRound===true)
 			{
@@ -191,6 +192,10 @@
 				{
 					bb[i].style="border-radius:40px;";
 				}
+				for(var j = 0; j < bc.length; j++)
+				{
+					bc[j].style="border-radius:40px;";
+				}
 			}
 			else
 			{
@@ -200,6 +205,10 @@
 				for(var m = 0; m < bb.length; m++)
 				{
 					bb[m].style.borderRadius="0px";
+				}
+				for(var n = 0; n < bc.length; n++)
+				{
+					bc[n].style.borderRadius="0px";
 				}
 			}
 
